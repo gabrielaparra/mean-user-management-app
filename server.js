@@ -10,7 +10,7 @@ const User = require('./app/models/user.js');
 //--------------------DATABASE STUFF--------------------
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/myUsers', (err) => {
+mongoose.connect('mongodb://localhost/myUsers', (err) => {
                                   //name of the dabatase used
   if (err) {
     console.log('Not connected to the database ' + err);
