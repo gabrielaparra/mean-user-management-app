@@ -8,6 +8,7 @@ const port = process.env.PORT || 8080;
 const router = express.Router();
 const appRoutes = require('./app/routes/api.js')(router);
 //use the router object with this routes file
+const path = require('path');
 
 //--------------------DATABASE STUFF--------------------
 const mongoose = require('mongoose');
@@ -30,6 +31,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // for parsing application/x-www-form-urlencoded
 
+app.use(express.static(__dirname + '/public'));
+//serve static content for the app from the “public” directory
+//in the application directory
+//express serving a static file location
+
 //the data needs to be parsed before we hit the routes
 app.use('/api', appRoutes);
 //'/api' is added to differentiate between back end and
@@ -37,7 +43,9 @@ app.use('/api', appRoutes);
 
 //-----------------------ROUTES------------------------
 
-
+app.get('*', (req, res, next) => {
+  res.sendFile(path.join(__dirname + '/public/app/views/index.html'));
+});
 
 //-----------------------------------------------------
 
