@@ -21,17 +21,19 @@ const UserSchema = new Schema ({
   }
 });
 
-UserSchema.pre('save', (next) => {
+UserSchema.pre('save', function(next) {
   const user = this;
+
   //use whichever user is being created
   bcrypt.hash(user.password, null, null, (err, hash) => {
-    if (err) {
-      return next(err);
-    }
-    user.password = hash;
-    //save the hash that was created as the user's password
-    next();
-    //after saving the hash as the password, exit the middleware
+  if (err) {
+    return next(err);
+  }
+
+  user.password = hash;
+  //save the hash that was created as the user's password
+  next();
+  //after saving the hash as the password, exit the middleware
   });
 });
 

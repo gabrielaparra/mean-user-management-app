@@ -5,7 +5,9 @@ const bodyParser = require('body-parser');
 const port = process.env.PORT || 8080;
 //use the 8080 server or if the environment to which we are deploying to has
 //a specific server, use that instead.
-const User = require('./app/models/user.js');
+const router = express.Router();
+const appRoutes = require('./app/routes/api.js')(router);
+//use the router object with this routes file
 
 //--------------------DATABASE STUFF--------------------
 const mongoose = require('mongoose');
@@ -19,31 +21,23 @@ mongoose.connect('mongodb://localhost/myUsers', (err) => {
   }
 });
 //---------------------MIDDLEWARES---------------------
+//----!!!The order of the middlewares is very important
 
 app.use(morgan('dev'));
+//log all requests
 app.use(bodyParser.json());
 // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }));
 // for parsing application/x-www-form-urlencoded
 
+//the data needs to be parsed before we hit the routes
+app.use('/api', appRoutes);
+//'/api' is added to differentiate between back end and
+//front end routes.
+
 //-----------------------ROUTES------------------------
 
-//http://localhost:8080/users
-app.post('/users', (req, res, next) => {
-  const user = new User();
 
-  user.username = req.body.username;
-  user.password = req.body.password;
-  user.email = req.body.email;
-
-  user.save((err) => {
-    if (err) {
-      res.send('Failed to save user: ' + err);
-      return;
-    }
-    res.send('User created.');
-  });
-});
 
 //-----------------------------------------------------
 
